@@ -57,7 +57,6 @@ export class Bullet extends GameObject {
     this.char = "×";
 
     setTimeout(() => {
-      console.log("bullet destroyed by itself");
       this.destroy();
     }, 50);
   }

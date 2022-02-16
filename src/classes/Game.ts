@@ -49,7 +49,6 @@ export class Game {
 
   draw() {
     if (this.dialog) {
-      console.log(this.dialog.getDialog(this.#lastScreen))
       this.#lastScreen = this.dialog.getDialog(this.#lastScreen);
       this.preElement.innerHTML = this.#lastScreen.join("\n");
       return;
@@ -100,7 +99,7 @@ export class Game {
   createDialog(text: string) {
     const dialog: string[] = [];
     const padding = 0;
-    const paddingWord =  " ".repeat(((this.width) - text.length )/ 2);
+    const paddingWord = " ".repeat((this.width - text.length) / 2);
     dialog.push(`╔${"═".repeat(this.width - padding * 2)}╗`);
     dialog.push(`║${" ".repeat(this.width - padding * 2)}║`);
     dialog.push(`║${paddingWord}${text}${paddingWord}║`);
