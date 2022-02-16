@@ -57,3 +57,4 @@ dist/
 ```
 
 `bundle.js` includes an inline source map.
+# console.game
