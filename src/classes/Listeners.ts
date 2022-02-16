@@ -16,7 +16,12 @@ export class Listeners {
 
   checkKey(e: KeyboardEvent, game: Game) {
     e = e || window.event;
-    if (!globalThis.game.player) return;
+    if(globalThis.game.dialog) {
+      if (e.keyCode === KeyCodes.SPACE) {
+        globalThis.game.dialog = null;
+      }
+      return
+    };
     if (e.keyCode === KeyCodes.ARROW_UP) {
       globalThis.game.player.up();
     } else if (e.keyCode === KeyCodes.ARROW_DOWN) {

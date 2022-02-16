@@ -4,5 +4,6 @@ export declare enum KeyCodes {
     ARROW_LEFT = 37,
     ARROW_RIGHT = 39,
     SPACE = 32,
-    V = 86
+    V = 86,
+    C = 67
 }

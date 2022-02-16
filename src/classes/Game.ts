@@ -1,3 +1,4 @@
+import { DialogBox } from "./DialogBox";
 import { Player } from "./Player";
 import { Stage } from "./Stage";
 
@@ -11,7 +12,8 @@ export class Game {
 
   public player: Player;
   public currentStage: Stage;
-  public isPaused: Boolean;
+  public dialog: DialogBox | null;
+  #lastScreen: string[];
 
   constructor(
     mainElementId: string,
@@ -30,7 +32,8 @@ export class Game {
     this.halfHeight = height / 2;
     this.player = player;
     this.currentStage = stage;
-    this.isPaused = false;
+    this.#lastScreen = [];
+    this.dialog = null;
     setInterval(() => {
       this.draw();
     }, 40 / 1000);
@@ -45,6 +48,16 @@ export class Game {
   }
 
   draw() {
+    if (this.dialog) {
+      console.log(this.dialog.getDialog(this.#lastScreen))
+      this.#lastScreen = this.dialog.getDialog(this.#lastScreen);
+      this.preElement.innerHTML = this.#lastScreen.join("\n");
+      return;
+    }
+    this.drawStage();
+  }
+
+  drawStage() {
     let array = [...this.currentStage.matrix];
     this.currentStage.gameObjects.forEach((go) => {
       const row = this.replaceAt(array[go.y], go.x, go.char);
@@ -70,15 +83,29 @@ export class Game {
         : this.player.x > array[0].length - this.halfWidth
         ? array[0].length - this.width
         : this.player.x - this.halfWidth;
-    array = array
+    this.#lastScreen = array
       .slice(yRange, yRange + this.height)
       .map((row) => row.substring(xRange, xRange + this.width));
-    array.unshift(this.infoBar());
-    this.preElement.innerHTML = array.join("\n");
+    this.#lastScreen.unshift(this.infoBar());
+    this.preElement.innerHTML = this.#lastScreen.join("\n");
   }
 
   infoBar(): string {
     const weapon = this.player.currentItem?.name;
-    return `Life:${" ♥".repeat(this.player.life)} - Weapon: ${weapon || "null"}`;
+    return `Life:${" ♥".repeat(this.player.life)} - Weapon: ${
+      weapon || "null"
+    }`;
+  }
+
+  createDialog(text: string) {
+    const dialog: string[] = [];
+    const padding = 0;
+    const paddingWord =  " ".repeat(((this.width) - text.length )/ 2);
+    dialog.push(`╔${"═".repeat(this.width - padding * 2)}╗`);
+    dialog.push(`║${" ".repeat(this.width - padding * 2)}║`);
+    dialog.push(`║${paddingWord}${text}${paddingWord}║`);
+    dialog.push(`║${" ".repeat(this.width - padding * 2)}║`);
+    dialog.push(`╚${"═".repeat(this.width - padding * 2)}╝`);
+    return dialog;
   }
 }
