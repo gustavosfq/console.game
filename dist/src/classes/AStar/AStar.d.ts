@@ -1,5 +1,6 @@
 import { GameObjectPosition } from "../../interfaces/GameObjectPosition";
 import { Node } from "./Node";
+import { GameObject } from '../GameObject';
 export declare class AStar {
     matrix: string[];
     searching: boolean;
@@ -8,7 +9,8 @@ export declare class AStar {
     publicList: Node[];
     privateList: Node[];
     path: GameObjectPosition[];
-    constructor(start: Node, end: Node, matrix: string[]);
+    gameObject: GameObject;
+    constructor(start: Node, end: Node, matrix: string[], gameObject: GameObject);
     getPath(): GameObjectPosition[];
     getMinimum(list: Node[]): Node | null;
     getChildren(node: Node): Node[];

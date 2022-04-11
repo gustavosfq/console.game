@@ -6,6 +6,7 @@ interface GameObjectInterface {
     y: number;
     char: string;
     colliderList: string;
+    active: boolean;
     facing: KeyCodes;
     onCollide(gameObject: GameObject): void;
 }
@@ -16,6 +17,7 @@ export declare class GameObject implements GameObjectInterface {
     char: string;
     colliderList: string;
     facing: KeyCodes;
+    active: boolean;
     constructor(x: number, y: number, char: string, colliderList?: string);
     willCollideStage(position: GameObjectPosition): boolean;
     willCollideGameObject(position: GameObjectPosition): GameObject | null;
@@ -26,5 +28,6 @@ export declare class GameObject implements GameObjectInterface {
     left(): void;
     right(): void;
     destroy(): void;
+    setActive(active: boolean): void;
 }
 export {};

@@ -1,4 +1,5 @@
 import { DialogBox } from "./DialogBox";
+import { OptionDialog } from "./GameObjects/OptionDialog";
 import { Player } from "./Player";
 import { Stage } from "./Stage";
 
@@ -12,8 +13,9 @@ export class Game {
 
   public player: Player;
   public currentStage: Stage;
-  public dialog: DialogBox | null;
+  public dialog: Array<DialogBox | OptionDialog>;
   #lastScreen: string[];
+  isPaused: boolean;
 
   constructor(
     mainElementId: string,
@@ -33,7 +35,8 @@ export class Game {
     this.player = player;
     this.currentStage = stage;
     this.#lastScreen = [];
-    this.dialog = null;
+    this.dialog = [];
+    this.isPaused = false;
     setInterval(() => {
       this.draw();
     }, 40 / 1000);
@@ -48,11 +51,20 @@ export class Game {
   }
 
   draw() {
-    if (this.dialog) {
-      this.#lastScreen = this.dialog.getDialog(this.#lastScreen);
-      this.preElement.innerHTML = this.#lastScreen.join("\n");
+    if (this.dialog.length > 0) {
+      this.isPaused = true;
+      let dialogFrame = this.dialog[0];
+      if (!dialogFrame) return;
+      if(dialogFrame instanceof OptionDialog) {
+        this.#lastScreen = dialogFrame.getOptions(this.#lastScreen)
+        this.preElement.innerHTML = this.#lastScreen.join("\n"); 
+      } else if(dialogFrame instanceof DialogBox) {
+        this.#lastScreen = dialogFrame.getDialog(this.#lastScreen);
+        this.preElement.innerHTML = this.#lastScreen.join("\n");
+      }
       return;
     }
+    this.isPaused = false;
     this.drawStage();
   }
 
@@ -94,17 +106,20 @@ export class Game {
     return `Life:${" ♥".repeat(this.player.life)} - Weapon: ${
       weapon || "null"
     }`;
+  } 
+
+  changeStage(stage: Stage) {
+    this.currentStage.playerPosition = {x: this.player.x, y: this.player.y};
+    this.currentStage.gameObjects.forEach((go) => {
+      go.setActive(false);
+    });
+    this.currentStage = stage;
+    this.currentStage.gameObjects.forEach((go) => {
+      go.setActive(true);
+    });
+    this.player.x = stage.playerPosition.x;
+    this.player.y = stage.playerPosition.y;
   }
 
-  createDialog(text: string) {
-    const dialog: string[] = [];
-    const padding = 0;
-    const paddingWord = " ".repeat((this.width - text.length) / 2);
-    dialog.push(`╔${"═".repeat(this.width - padding * 2)}╗`);
-    dialog.push(`║${" ".repeat(this.width - padding * 2)}║`);
-    dialog.push(`║${paddingWord}${text}${paddingWord}║`);
-    dialog.push(`║${" ".repeat(this.width - padding * 2)}║`);
-    dialog.push(`╚${"═".repeat(this.width - padding * 2)}╝`);
-    return dialog;
-  }
+  
 }

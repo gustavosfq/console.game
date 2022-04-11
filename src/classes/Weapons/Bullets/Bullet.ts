@@ -23,6 +23,7 @@ export class Bullet extends GameObject {
   init() {
     const { x, y } = this;
     this.interval = window.setInterval(() => {
+      if(globalThis.game.isPaused) return;
       const frame = this.animation.shift();
       if (!frame) {
         this.onCollide();
@@ -59,5 +60,22 @@ export class Bullet extends GameObject {
     setTimeout(() => {
       this.destroy();
     }, 50);
+  }
+
+  willCollideGameObject(position: GameObjectPosition): GameObject | null {
+    return (
+      globalThis.game.currentStage.gameObjects.find(
+        (go) =>
+          go.x === position.x &&
+          go.y === position.y &&
+          go.id !== this.id &&
+          go.constructor.name !== this.constructor.name
+      ) || null
+    );
+  }
+
+  destroy(): void {
+    super.destroy();
+    clearInterval(this.interval);
   }
 }

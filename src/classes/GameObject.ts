@@ -9,6 +9,7 @@ interface GameObjectInterface {
   y: number;
   char: string;
   colliderList: string;
+  active: boolean;
   facing: KeyCodes;
   onCollide(gameObject: GameObject): void;
 }
@@ -20,6 +21,7 @@ export class GameObject implements GameObjectInterface {
   public char: string;
   public colliderList: string;
   public facing: KeyCodes;
+  public active: boolean;
 
   constructor(x: number, y: number, char: string, colliderList: string = "") {
     this.id = (Math.random() + 1).toString(36).substring(7);
@@ -28,6 +30,7 @@ export class GameObject implements GameObjectInterface {
     this.char = char;
     this.colliderList = colliderList + GlobalColliders;
     this.facing = KeyCodes.ARROW_RIGHT;
+    this.active = true;
   }
 
   willCollideStage(position: GameObjectPosition): boolean {
@@ -42,8 +45,7 @@ export class GameObject implements GameObjectInterface {
         (go) =>
           go.x === position.x &&
           go.y === position.y &&
-          go.id !== this.id &&
-          go.constructor.name !== this.constructor.name
+          go.id !== this.id 
       ) || null
     );
   }
@@ -126,9 +128,21 @@ export class GameObject implements GameObjectInterface {
   }
 
   destroy(): void {
+    let gameObject = null;
     globalThis.game.currentStage.gameObjects =
       globalThis.game.currentStage.gameObjects.filter(
-        (go) => go.id !== this.id
-      );
+        (go) => {
+          if(go.id !== this.id) {
+            gameObject = undefined;
+            return true
+          }
+          return false;
+        }
+        );
+        gameObject = null;
+  }
+
+  setActive(active: boolean): void {
+    this.active = active;
   }
 }

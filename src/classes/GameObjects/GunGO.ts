@@ -11,9 +11,11 @@ export class GunGo extends GameObject {
 
   onCollide(gameObject: GameObject): void {
     if (gameObject instanceof Player) {
+      gameObject.x = this.x;
+      gameObject.y = this.y;
       gameObject.items.push(new Gun());
       this.destroy();
-      globalThis.game.dialog = new DialogBox("Acabas de encontrar una ╾ ")
+      new DialogBox("Acabas de encontrar una ╾ ")
     }
   }
 }

@@ -1,4 +1,5 @@
 import { DialogBox } from "./DialogBox";
+import { OptionDialog } from "./GameObjects/OptionDialog";
 import { Player } from "./Player";
 import { Stage } from "./Stage";
 export declare class Game {
@@ -11,11 +12,12 @@ export declare class Game {
     readonly halfHeight: number;
     player: Player;
     currentStage: Stage;
-    dialog: DialogBox | null;
+    dialog: Array<DialogBox | OptionDialog>;
+    isPaused: boolean;
     constructor(mainElementId: string, width: number, height: number, player: Player, stage: Stage);
     replaceAt(str: string, index: number, replacement: string): string;
     draw(): void;
     drawStage(): void;
     infoBar(): string;
-    createDialog(text: string): string[];
+    changeStage(stage: Stage): void;
 }

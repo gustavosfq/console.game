@@ -1,5 +1,6 @@
 import { GameObjectPosition } from "../../interfaces/GameObjectPosition";
 import { Node } from "./Node";
+import { GameObject } from '../GameObject';
 
 export class AStar {
   matrix: string[];
@@ -9,37 +10,49 @@ export class AStar {
   publicList: Node[];
   privateList: Node[];
   path: GameObjectPosition[];
-  constructor(start: Node, end: Node, matrix: string[]) {
+  gameObject: GameObject;
+  constructor(start: Node, end: Node, matrix: string[], gameObject: GameObject) {
     this.matrix = matrix;
     this.start = start;
     this.end = end;
     this.publicList = [this.start];
     this.privateList = [];
     this.searching = true;
+    this.gameObject = gameObject;
     this.path = [];
   }
 
   getPath() {
-      let count = 10000;
-    while (this.searching || count < 0) {
+    let count = 10000;
+    while (this.searching) {
       let best = this.getMinimum(this.publicList) || this.start;
       this.getChildren(best);
       this.switchNode(best);
+      if (count < 0) {
+        console.log("se deja");
+        this.searching = false;
+      }
+
       count--;
     }
     return this.createPath();
   }
 
   getMinimum(list: Node[]) {
-    if (list) {
-      let best = list.reduce((prev, curr) => {
-        return prev.f && curr.f && prev.f < curr.f ? prev : curr;
-      });
-      let bestList = list.filter((node) => node.f === best.f);
-      best = bestList.reduce((prev, curr) => {
-        return prev.h && curr.h && prev.h < curr.h ? prev : curr;
-      });
-      return best;
+    try {
+      if (list) {
+        let best = list.reduce((prev, curr) => {
+          return prev.f && curr.f && prev.f < curr.f ? prev : curr;
+        });
+        let bestList = list.filter((node) => node.f === best.f);
+        best = bestList.reduce((prev, curr) => {
+          return prev.h && curr.h && prev.h < curr.h ? prev : curr;
+        });
+        return best;
+      }
+    } catch (error) {
+      console.log(this.gameObject)
+      this.searching = false;
     }
     return null;
   }
@@ -92,10 +105,10 @@ export class AStar {
   validateAndCreate(position: GameObjectPosition, node: Node) {
     try {
       let char = this.matrix[position.y][position.x];
-      if (char !== " " || char == undefined) throw "char es " + char;
+      if (this.gameObject.willCollideStage(position) || char == undefined) throw "char es " + char;
       if (position.x === this.end.x && position.y == this.end.y) {
-        this.searching = false;
         this.end = new Node(position.x, position.y, node);
+        this.searching = false;
       }
       return new Node(position.x, position.y, node);
     } catch (error) {

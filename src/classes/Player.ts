@@ -10,7 +10,7 @@ export class Player extends GameObject {
   public life: number;
 
   constructor(gameObject: GameObject) {
-    gameObject.colliderList = "┏━┓┃┣┫}[";
+    gameObject.colliderList = "┏━┓┃┣┫}[/";
     super(gameObject.x, gameObject.y, gameObject.char, gameObject.colliderList);
     this.items = [];
     this.currentItemIndex = 0;

@@ -4,7 +4,7 @@ import { GameObject } from "./GameObject";
 export class Stage {
   public matrix: string[];
   public gameObjects: Array<GameObject>;
-  private playerPosition: GameObjectPosition;
+  public playerPosition: GameObjectPosition;
 
   constructor(matrix: string[], playerPosition: GameObjectPosition) {
     this.matrix = this.addFrame(matrix);

@@ -5,4 +5,5 @@ export declare class DialogBox {
     constructor(text: string);
     getDialog(lastScreen: string[]): string[];
     init(): void;
+    textRow(text: string): string[];
 }

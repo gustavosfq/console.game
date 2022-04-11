@@ -3,7 +3,7 @@ import { GameObject } from "./GameObject";
 export declare class Stage {
     matrix: string[];
     gameObjects: Array<GameObject>;
-    private playerPosition;
+    playerPosition: GameObjectPosition;
     constructor(matrix: string[], playerPosition: GameObjectPosition);
     addGameObject(gameObject: GameObject): void;
     getChar(x: number, y: number): string;
